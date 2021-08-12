@@ -58,6 +58,8 @@ func init() {
 // - `region` (optional)
 // Override AWS region. Useful if it is not set with environment variable.
 //
+// - `work_group` (optional)
+// Override AWS work_group. Default is primary.
 // Credentials must be accessible via the SDK's Default Credential Provider Chain.
 // For more advanced AWS credentials/session/config management, please supply
 // a custom AWS session directly via `athena.Open()`.
@@ -79,6 +81,7 @@ func (d *Driver) Open(connStr string) (driver.Conn, error) {
 		athena:         athena.New(cfg.Session),
 		db:             cfg.Database,
 		OutputLocation: cfg.OutputLocation,
+		WorkGroup:      cfg.WorkGroup,
 		pollFrequency:  cfg.PollFrequency,
 	}, nil
 }
@@ -115,6 +118,7 @@ type Config struct {
 	Session        *session.Session
 	Database       string
 	OutputLocation string
+	WorkGroup      string
 
 	PollFrequency time.Duration
 }
@@ -138,6 +142,7 @@ func configFromConnectionString(connStr string) (*Config, error) {
 
 	cfg.Database = args.Get("db")
 	cfg.OutputLocation = args.Get("output_location")
+	cfg.WorkGroup = args.Get("work_group")
 
 	frequencyStr := args.Get("poll_frequency")
 	if frequencyStr != "" {

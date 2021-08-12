@@ -15,6 +15,7 @@ type conn struct {
 	athena         athenaiface.AthenaAPI
 	db             string
 	OutputLocation string
+	WorkGroup      string
 
 	pollFrequency time.Duration
 }
@@ -65,6 +66,7 @@ func (c *conn) startQuery(query string) (string, error) {
 		ResultConfiguration: &athena.ResultConfiguration{
 			OutputLocation: aws.String(c.OutputLocation),
 		},
+		WorkGroup: &c.WorkGroup,
 	})
 	if err != nil {
 		return "", err
